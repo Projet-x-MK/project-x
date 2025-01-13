@@ -17,26 +17,26 @@ public class CollisionHandler : MonoBehaviour
         initialCameraRotation = Camera.main.transform.rotation;
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Obstacle"))
+        // 몬스터와 충돌했을 때
+        if (other.CompareTag("Monster"))
         {
-            if (!isCameraChanged)
-            {
-                ChangeCameraView(); // 카메라를 리스폰 지역을 고정적으로 바라보게 변경
-                isCameraChanged = true;
+            Debug.Log("몬스터와 충돌! 리스폰 처리합니다.");
 
-                // 3초 뒤 카메라 복구
-                // Invoke("ResetCameraView", 3f);
-            }
+            // RespawnPlayer();        // 리스폰 처리
+            ChangeCameraView();     // 리스폰 지역을 바라보도록 카메라 변경
+            isCameraChanged = true;
+
+            // 3초 뒤 카메라 복구
+            Invoke("ResetCameraView", 3f);
         }
     }
 
     private void ChangeCameraView()
     {
         // 카메라를 리스폰 지역 위에서 내려다보는 시점으로 설정
-        Camera.main.transform.position = respawnLocation.position + new Vector3(0, 15, -10);  // 리스폰 지역에서 15만큼 위, 10만큼 뒤로
+        Camera.main.transform.position = respawnLocation.position + new Vector3(0, 80, 0);  // 리스폰 지역에서 80만큼 위로
         Camera.main.transform.rotation = Quaternion.Euler(60, 0, 0);  // 카메라를 아래로 내려다보는 각도로 설정
     }
 
