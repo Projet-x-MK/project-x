@@ -1472,7 +1472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 330585546}
   characterController: {fileID: 727234684}
-  moveSpeed: 10
+  moveSpeed: 20
   jumpSpeed: 10
   gravity: -20
   yVelocity: 0
@@ -2001,7 +2001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f16e65bc64534e219a1b99ac9e3537e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 10
   waypoints:
   - {x: 200, y: 5, z: 0}
   - {x: 230, y: 5, z: 0}

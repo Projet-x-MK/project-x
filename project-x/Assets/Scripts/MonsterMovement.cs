@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MonsterMovement : MonoBehaviour
 {
-    public float speed = 3.0f; // 몬스터 이동 속도
+    public float speed = 10.0f; // 몬스터 이동 속도
     
     [SerializeField]
     private Vector3[] waypoints = new Vector3[] {
