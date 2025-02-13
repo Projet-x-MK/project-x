@@ -11,13 +11,13 @@ public class CharacterMove : MonoBehaviour
     public CharacterController characterController;
     // CharacterController에 3D 오브젝트를 적용하기 위한 characterController 변수 선언
 
-    public float moveSpeed = 20f;
+    private float moveSpeed = 100f;
     // 이동 속도
-    public float jumpSpeed = 10f;
+    private float jumpSpeed = 36f;
     // 점프 속도
-    public float gravity = -20f;
+    private float gravity = -55f;
     // 중력
-    public float yVelocity = 0;
+    private float yVelocity = 0;
     // Y축 움직임
 
     void Start()

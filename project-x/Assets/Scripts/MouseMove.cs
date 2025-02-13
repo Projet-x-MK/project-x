@@ -33,15 +33,15 @@ public class MouseMove : MonoBehaviour
         /*
          * 아래의 if문은 마우스로 이동하는 시야가 사람의 시야처럼 보이기 하기 위함 
          */
-        if (rotationX > 35f)
+        if (rotationX > 80f)
         {
-            rotationX = 35f;
-            // 위로 35도 이상 넘어가지 못하게 (고개가 과하게 젖혀지지 않게)
+            rotationX = 80f;
+            // 위로 90도 이상 넘어가지 못하게 (고개가 과하게 젖혀지지 않게)
         }
 
-        if(rotationX < -30f)
+        if(rotationX < -70f)
         {
-            rotationX = -30f;
+            rotationX = -70f;
             // 아래로 30도 이상 넘어가지 못하게 (고개가 과하게 꼬꾸라지지 않게)
         }
 
