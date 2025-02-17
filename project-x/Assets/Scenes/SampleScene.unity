@@ -1216,7 +1216,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   characterController: {fileID: 0}
   moveSpeed: 50
-  jumpSpeed: 50
+  jumpSpeed: 10
   gravity: -9.81
   smoothTime: 0.1
   groundCheckDistance: 0.1
