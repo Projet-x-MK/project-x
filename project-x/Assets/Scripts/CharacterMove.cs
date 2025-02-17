@@ -2,75 +2,79 @@ using UnityEngine;
 
 public class CharacterMove : MonoBehaviour
 {
+    public CharacterController controller;
     public Transform cameraTransform;
-    public CharacterController characterController;
 
-    public float moveSpeed = 50f;
-    public float jumpSpeed = 30f;
+    public float maxSpeed = 50f;
+    public float acceleration = 100f;
+    public float deceleration = 100f;
+    public float airDeceleration = 10f;
     public float gravity = -50f;
-    private float yVelocity = 0;
+    public float jumpForce = 15f;
 
-    private Vector3 currentVelocity;
-    public float smoothTime = 0.1f;
+    private Vector3 velocity;
+    private bool isGrounded;
 
-    private bool isJumping = false;
-
-    void Start()
+    private void Start()
     {
+        if (controller == null)
+            controller = GetComponent<CharacterController>();
         if (cameraTransform == null)
             cameraTransform = Camera.main.transform;
-        
-        if (characterController == null)
-            characterController = GetComponent<CharacterController>();
     }
 
-    void Update()
+    private void Update()
     {
-        // 점프 입력 처리
-        if (Input.GetButtonDown("Jump") && !isJumping && characterController.isGrounded)
+        isGrounded = controller.isGrounded;
+
+        if (isGrounded && velocity.y < 0)
         {
-            yVelocity = jumpSpeed;
-            isJumping = true;
+            velocity.y = -2f;
         }
-    }
 
-    void FixedUpdate()
-    {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
-        // 이동 방향 계산
-        Vector3 moveDirection = new Vector3(h, 0, v).normalized;
-        moveDirection = cameraTransform.TransformDirection(moveDirection);
-        moveDirection *= moveSpeed;
+        Vector3 move = cameraTransform.right * x + cameraTransform.forward * z;
+        move.y = 0f;
+        move = Vector3.ClampMagnitude(move, 1f);
 
-        // 지면 체크 및 중력 적용
-        if (characterController.isGrounded && yVelocity < 0)
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+
+        if (isGrounded)
         {
-            yVelocity = -2f;
-            isJumping = false;
+            if (move.magnitude > 0.1f)
+            {
+                // 방향 전환 시 속도 조정
+                float alignmentFactor = Vector3.Dot(horizontalVelocity.normalized, move.normalized);
+                horizontalVelocity = Vector3.Lerp(horizontalVelocity, move * maxSpeed, (1 - alignmentFactor) * Time.deltaTime * 5f);
+                
+                // 가속도 적용
+                horizontalVelocity += move * acceleration * Time.deltaTime;
+            }
+            else
+            {
+                // 감속 로직 개선
+                horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            }
         }
         else
         {
-            yVelocity += gravity * Time.fixedDeltaTime;
+            // 공중에서의 움직임
+            horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, Vector3.zero, airDeceleration * Time.deltaTime);
         }
 
-        // 최종 이동 벡터 계산
-        Vector3 movement = new Vector3(moveDirection.x, yVelocity, moveDirection.z);
+        // 속도 벡터 정규화 및 최대 속도 제한
+        horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, maxSpeed);
+        velocity = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
 
-        // 수평 이동에만 스무딩 적용
-        Vector3 smoothedMovement = Vector3.SmoothDamp(
-            new Vector3(characterController.velocity.x, 0, characterController.velocity.z),
-            new Vector3(movement.x, 0, movement.z),
-            ref currentVelocity,
-            smoothTime
-        );
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+        }
 
-        // 최종 이동 벡터 조합 (스무딩된 수평 이동 + 수직 속도)
-        movement = new Vector3(smoothedMovement.x, movement.y, smoothedMovement.z);
+        velocity.y += gravity * Time.deltaTime;
 
-        // 캐릭터 이동
-        characterController.Move(movement * Time.fixedDeltaTime);
-        //
+        controller.Move(velocity * Time.deltaTime);
     }
 }
