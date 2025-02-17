@@ -7,6 +7,7 @@ TagManager:
   - ObStacle
   - Monster
   - DropItemPrefeb
+  - JumpPlatform
   layers:
   - Default
   - TransparentFX

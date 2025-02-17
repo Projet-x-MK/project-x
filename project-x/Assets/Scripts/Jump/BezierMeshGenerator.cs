@@ -3,49 +3,51 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class BezierMeshGenerator : MonoBehaviour
 {
-    public BezierCurve bezierCurve;
-    public float width = 2f;
-    public int meshResolution = 10;
-    public bool addBackfaceCollider = true; // 추가적인 뒷면 충돌 여부
+    private Vector3[] controlPoints = new Vector3[4]; // 4개의 제어점
+    [SerializeField] private float width = 10f; // 점프대 폭
+    [SerializeField] private int meshResolution = 10; // 해상도 (곡선 분할 개수)
 
     private Mesh mesh;
 
-    private void Start()
+    public void SetControlPoints(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
     {
+        controlPoints[0] = p0;
+        controlPoints[1] = p1;
+        controlPoints[2] = p2;
+        controlPoints[3] = p3;
+
         GenerateMesh();
     }
 
     private void GenerateMesh()
     {
-        if (bezierCurve == null) 
+        if (controlPoints.Length < 4)
         {
-            Debug.LogError("BezierCurve가 BezierMeshGenerator에 연결되지 않았습니다!");
+            Debug.LogError("Bezier 곡선을 만들기 위한 4개의 포인트가 설정되지 않았습니다.");
             return;
         }
-
-        Debug.Log("Bezier Mesh 생성 시작");
 
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        int totalVertices = (meshResolution + 1) * 4; // 윗면 + 아랫면
+        int totalVertices = (meshResolution + 1) * 4;
         Vector3[] vertices = new Vector3[totalVertices];
-        int[] triangles = new int[meshResolution * 12]; // 윗면 6개 + 아랫면 6개 = 12개
+        int[] triangles = new int[meshResolution * 12];
 
-        float thickness = 0.2f; // 🔥 두께 조절 가능 (얇으면 0.1f, 두꺼우면 0.5f)
+        float thickness = 0.2f; // 점프대의 두께 (얇으면 0.1f, 두꺼우면 0.5f)
 
         for (int i = 0; i <= meshResolution; i++)
         {
             float t = i / (float)meshResolution;
-            Vector3 center = bezierCurve.GetPoint(t);
-            Vector3 direction = (bezierCurve.GetPoint(t + 0.01f) - center).normalized;
+            Vector3 center = BezierCurve.GetPoint(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], t);
+            Vector3 direction = (BezierCurve.GetPoint(controlPoints[0], controlPoints[1], controlPoints[2], controlPoints[3], t + 0.01f) - center).normalized;
             Vector3 perpendicular = Vector3.Cross(direction, Vector3.up).normalized * width * 0.5f;
 
-            // 윗면 (기존 점프대)
+            // 윗면 점들
             vertices[i * 4] = center - perpendicular;
             vertices[i * 4 + 1] = center + perpendicular;
 
-            // 아랫면 (두께 추가)
+            // 아랫면 점들 (두께 추가)
             vertices[i * 4 + 2] = center - perpendicular - Vector3.up * thickness;
             vertices[i * 4 + 3] = center + perpendicular - Vector3.up * thickness;
 
@@ -83,8 +85,5 @@ public class BezierMeshGenerator : MonoBehaviour
 
         meshCollider.sharedMesh = mesh;
         meshCollider.convex = false;
-
-        Debug.Log("Bezier Mesh 생성 완료! 두께 추가됨");
     }
-
 }
