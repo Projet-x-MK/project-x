@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BezierCurve : MonoBehaviour
+public static class BezierCurve
 {
     public static Vector3 GetPoint(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t)
     {
@@ -10,7 +10,7 @@ public class BezierCurve : MonoBehaviour
         float uuu = uu * u;
         float ttt = tt * t;
 
-        Vector3 p = uuu * p0; 
+        Vector3 p = uuu * p0;
         p += 3 * uu * t * p1;
         p += 3 * u * tt * p2;
         p += ttt * p3;
