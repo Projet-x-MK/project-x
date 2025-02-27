@@ -464,7 +464,6 @@ public class PathObject : MonoBehaviour
             ExtendMeshColliderAlongMesh();
             MakeMeshCollider();
 
-
             void GetMeshColliderData()
             {
 
