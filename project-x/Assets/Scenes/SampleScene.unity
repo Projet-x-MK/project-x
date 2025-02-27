@@ -44519,9 +44519,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a99d5ff7a9f4db9afd17cfc3bc0025, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpPadType: 0
+  jumpPadType: 1
   curveResolution: 20
-  width: 6
+  width: 3
 --- !u!120 &1937940131
 LineRenderer:
   serializedVersion: 2
@@ -44647,7 +44647,7 @@ LineRenderer:
       m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
-    alignment: 0
+    alignment: 1
     textureMode: 0
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
@@ -44679,7 +44679,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e8527589bea63455787154cd11c9e6ae, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
